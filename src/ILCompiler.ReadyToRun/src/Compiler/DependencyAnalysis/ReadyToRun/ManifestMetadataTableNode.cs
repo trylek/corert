@@ -75,7 +75,7 @@ namespace ILCompiler.DependencyAnalysis.ReadyToRun
                 AssemblyReferenceHandle assemblyRefHandle = MetadataTokens.AssemblyReferenceHandle(assemblyRefIndex);
                 AssemblyReference assemblyRef = inputModule.MetadataReader.GetAssemblyReference(assemblyRefHandle);
                 string assemblyName = inputModule.MetadataReader.GetString(assemblyRef.Name);
-                _assemblyRefToModuleIdMap.Add(assemblyName, assemblyRefIndex);
+                _assemblyRefToModuleIdMap[assemblyName] = assemblyRefIndex;
             }
 
             // AssemblyRefCount + 1 corresponds to ROWID 0 in the manifest metadata
