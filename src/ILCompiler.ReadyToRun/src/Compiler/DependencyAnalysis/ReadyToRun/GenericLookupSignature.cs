@@ -62,29 +62,15 @@ namespace ILCompiler.DependencyAnalysis.ReadyToRun
             EcmaModule targetModule;
             if (_methodArgument != null)
             {
-                if (_methodArgument.Method.GetTypicalMethodDefinition() is EcmaMethod ecmaMethod)
-                {
-                    targetModule = _signatureContext.GetModuleTokenForMethod(ecmaMethod).Module;
-                }
-                else
-                {
-                    targetModule = _signatureContext.LocalContext;
-                }
+                targetModule = _methodArgument.Token.Module;
             }
             else if (_typeArgument != null)
             {
-                if (_typeArgument.GetTypeDefinition() is EcmaType ecmaType)
-                {
-                    targetModule = _signatureContext.GetModuleTokenForType(ecmaType).Module;
-                }
-                else
-                {
-                    targetModule = _signatureContext.LocalContext;
-                }
+                targetModule = _signatureContext.GetTargetModule(_typeArgument);
             }
             else if (_fieldArgument != null)
             {
-                targetModule = _signatureContext.GetModuleTokenForField(_fieldArgument.GetTypicalFieldDefinition()).Module;
+                targetModule = _signatureContext.GetTargetModule(_fieldArgument);
             }
             else
             {

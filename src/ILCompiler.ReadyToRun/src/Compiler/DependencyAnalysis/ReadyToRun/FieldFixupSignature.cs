@@ -37,7 +37,7 @@ namespace ILCompiler.DependencyAnalysis.ReadyToRun
             {
                 dataBuilder.AddSymbol(this);
 
-                EcmaModule targetModule = _signatureContext.GetModuleTokenForField(_fieldDesc.GetTypicalFieldDefinition()).Module;
+                EcmaModule targetModule = _signatureContext.GetModuleTokenForField(_fieldDesc).Module;
                 SignatureContext innerContext = dataBuilder.EmitFixup(r2rFactory, _fixupKind, targetModule, _signatureContext);
 
                 dataBuilder.EmitFieldSignature(_fieldDesc, innerContext);

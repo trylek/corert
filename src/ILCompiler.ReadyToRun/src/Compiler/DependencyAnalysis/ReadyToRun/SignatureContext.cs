@@ -51,6 +51,24 @@ namespace ILCompiler.DependencyAnalysis.ReadyToRun
             return new SignatureContext(GlobalContext, innerContext, Resolver);
         }
 
+        public EcmaModule GetTargetModule(TypeDesc type)
+        {
+            if (type.IsPrimitive)
+            {
+                return LocalContext;
+            }
+            if (type.GetTypeDefinition() is EcmaType ecmaType)
+            {
+                return GetModuleTokenForType(ecmaType).Module;
+            }
+            return LocalContext;
+        }
+
+        public EcmaModule GetTargetModule(FieldDesc field)
+        {
+            return GetModuleTokenForField(field).Module;
+        }
+
         public ModuleToken GetModuleTokenForType(EcmaType type, bool throwIfNotFound = true)
         {
             return Resolver.GetModuleTokenForType(type, throwIfNotFound);

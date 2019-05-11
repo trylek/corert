@@ -411,7 +411,7 @@ namespace ILCompiler.DependencyAnalysis.ReadyToRun
             {
                 if (methodToken.IsNull)
                 {
-                    methodToken = context.GetModuleTokenForMethod(method.GetTypicalMethodDefinition());
+                    methodToken = context.GetModuleTokenForMethod(method);
                 }
                 switch (methodToken.TokenType)
                 {
@@ -478,21 +478,17 @@ namespace ILCompiler.DependencyAnalysis.ReadyToRun
                         MethodSpecification methodSpecification = methodToken.MetadataReader.GetMethodSpecification((MethodSpecificationHandle)methodToken.Handle);
                         methodToken = new ModuleToken(methodToken.Module, methodSpecification.Method);
                     }
-                    else
-                    {
-                        throw new NotImplementedException();
-                    }
                 }
             }
 
             if (methodToken.IsNull && !enforceDefEncoding)
             {
-                methodToken = context.GetModuleTokenForMethod(method.GetMethodDefinition(), throwIfNotFound: false);
+                methodToken = context.GetModuleTokenForMethod(method, throwIfNotFound: false);
             }
             if (methodToken.IsNull)
             {
                 flags |= (uint)ReadyToRunMethodSigFlags.READYTORUN_METHOD_SIG_OwnerType;
-                methodToken = context.GetModuleTokenForMethod(method.GetTypicalMethodDefinition());
+                methodToken = context.GetModuleTokenForMethod(method);
             }
 
             if (method.OwningType.HasInstantiation)

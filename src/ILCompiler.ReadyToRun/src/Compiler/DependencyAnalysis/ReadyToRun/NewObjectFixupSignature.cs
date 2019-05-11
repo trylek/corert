@@ -33,11 +33,7 @@ namespace ILCompiler.DependencyAnalysis.ReadyToRun
             {
                 dataBuilder.AddSymbol(this);
 
-                EcmaModule targetModule = _signatureContext.LocalContext;
-                if (_typeDesc.GetTypeDefinition().GetClosestDefType() is EcmaType ecmaType)
-                {
-                    targetModule = _signatureContext.GetModuleTokenForType(ecmaType).Module;
-                }
+                EcmaModule targetModule = _signatureContext.GetTargetModule(_typeDesc);
                 SignatureContext innerContext = dataBuilder.EmitFixup(r2rFactory, ReadyToRunFixupKind.READYTORUN_FIXUP_NewObject, targetModule, _signatureContext);
                 dataBuilder.EmitTypeSignature(_typeDesc, innerContext);
             }

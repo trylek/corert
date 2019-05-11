@@ -63,7 +63,7 @@ namespace ILCompiler.DependencyAnalysis.ReadyToRun
                     signatureBuilder.EmitMethodSignature(
                         method.Method, 
                         constrainedType: null,
-                        default(ModuleToken),
+                        moduleToken,
                         enforceDefEncoding: true,
                         method.SignatureContext,
                         isUnboxingStub: false, 

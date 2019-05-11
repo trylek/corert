@@ -78,6 +78,8 @@ namespace ILCompiler.DependencyAnalysis.ReadyToRun
             sb.Append(nameMangler.GetMangledTypeName(_delegateType));
             sb.Append(" -> ");
             sb.Append(nameMangler.GetMangledMethodName(_targetMethod.Method));
+            sb.Append("; ");
+            sb.Append(_methodToken.ToString());
             sb.Append(")");
         }
 
