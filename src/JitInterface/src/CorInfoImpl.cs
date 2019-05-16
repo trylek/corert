@@ -54,11 +54,23 @@ namespace Internal.JitInterface
 
         private ExceptionDispatchInfo _lastException;
 
-        [DllImport("clrjitilc", CallingConvention=CallingConvention.StdCall)] // stdcall in CoreCLR!
-        private extern static IntPtr jitStartup(IntPtr host);
+        private static class WindowsTarget
+        {
+            [DllImport("clrjitilc", CallingConvention = CallingConvention.StdCall)] // stdcall in CoreCLR!
+            public extern static IntPtr jitStartup(IntPtr host);
 
-        [DllImport("clrjitilc", CallingConvention=CallingConvention.StdCall)]
-        private extern static IntPtr getJit();
+            [DllImport("clrjitilc", CallingConvention = CallingConvention.StdCall)]
+            public extern static IntPtr getJit();
+        }
+
+        private static class LinuxTarget
+        {
+            [DllImport("linuxnonjit", CallingConvention = CallingConvention.StdCall)] // stdcall in CoreCLR!
+            public extern static IntPtr jitStartup(IntPtr host);
+
+            [DllImport("linuxnonjit", CallingConvention = CallingConvention.StdCall)]
+            public extern static IntPtr getJit();
+        }
 
         [DllImport(JitSupportLibrary)]
         private extern static IntPtr GetJitHost(IntPtr configProvider);
@@ -106,16 +118,24 @@ namespace Internal.JitInterface
 
         private JitConfigProvider _jitConfig;
 
-        public CorInfoImpl(JitConfigProvider jitConfig)
+        public CorInfoImpl(JitConfigProvider jitConfig, bool linuxTarget)
         {
             //
             // Global initialization
             //
             _jitConfig = jitConfig;
 
-            jitStartup(GetJitHost(_jitConfig.UnmanagedInstance));
+            if (linuxTarget)
+            {
+                LinuxTarget.jitStartup(GetJitHost(_jitConfig.UnmanagedInstance));
+                _jit = LinuxTarget.getJit();
+            }
+            else
+            {
+                WindowsTarget.jitStartup(GetJitHost(_jitConfig.UnmanagedInstance));
+                _jit = WindowsTarget.getJit();
+            }
 
-            _jit = getJit();
             if (_jit == IntPtr.Zero)
             {
                 throw new IOException("Failed to initialize JIT");
@@ -3015,7 +3035,7 @@ namespace Internal.JitInterface
             flags.Set(CorJitFlag.CORJIT_FLAG_SKIP_VERIFICATION);
             flags.Set(CorJitFlag.CORJIT_FLAG_READYTORUN);
             flags.Set(CorJitFlag.CORJIT_FLAG_RELOC);
-            flags.Set(CorJitFlag.CORJIT_FLAG_PREJIT);
+            // flags.Set(CorJitFlag.CORJIT_FLAG_PREJIT);
             flags.Set(CorJitFlag.CORJIT_FLAG_USE_PINVOKE_HELPERS);
 
             if (this.MethodBeingCompiled.IsNativeCallable)

@@ -64,7 +64,7 @@ namespace ILCompiler.DependencyAnalysis.ReadyToRun
             {
                 byte[] unwindInfo = _methodNode.FrameInfos[frameInfoIndex].BlobData;
 
-                if (factory.Target.Architecture == Internal.TypeSystem.TargetArchitecture.X64)
+                if (factory.Target.Architecture == Internal.TypeSystem.TargetArchitecture.X64 && unwindInfo.Length > 0)
                 {
                     // On Amd64, patch the first byte of the unwind info by setting the flags to EHANDLER | UHANDLER
                     // as that's what CoreCLR does (zapcode.cpp, ZapUnwindData::Save).

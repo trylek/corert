@@ -109,7 +109,7 @@ namespace Internal.JitInterface
         private readonly SignatureContext _signatureContext;
 
         public CorInfoImpl(ReadyToRunCodegenCompilation compilation, EcmaModule tokenContext, JitConfigProvider jitConfig)
-            : this(jitConfig)
+            : this(jitConfig, !compilation.NodeFactory.Target.IsWindows)
         {
             _compilation = compilation;
             _tokenContext = tokenContext;

@@ -42,7 +42,7 @@ namespace Internal.JitInterface
         private TypeDesc[] _variableToTypeDesc;
 
         public CorInfoImpl(RyuJitCompilation compilation, JitConfigProvider jitConfig)
-            : this(jitConfig)
+            : this(jitConfig, !compilation.NodeFactory.Target.IsWindows)
         {
             _compilation = compilation;
         }
